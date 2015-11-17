@@ -68,9 +68,6 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
     return view ? !view.hidden : NO;
 }
 
-
-#pragma mark - Getters (Private)
-
 - (DZNEmptyDataSetView *)emptyDataSetView
 {
     DZNEmptyDataSetView *view = objc_getAssociatedObject(self, kEmptyDataSetView);
@@ -90,6 +87,7 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
     return view;
 }
 
+#pragma mark - Getters (Private)
 - (BOOL)dzn_canDisplay
 {
     if (self.emptyDataSetSource && [self.emptyDataSetSource conformsToProtocol:@protocol(DZNEmptyDataSetSource)]) {
@@ -509,6 +507,14 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
             [self.emptyDataSetView.imageView.layer removeAnimationForKey:kEmptyImageViewAnimationKey];
         }
         
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
+            [[self subviews] enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                if ([obj isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
+                    obj.userInteractionEnabled = NO;
+                }
+            }];
+        }
+        
         // Notifies that the empty dataset view did appear
         [self dzn_didAppear];
     }
@@ -519,6 +525,14 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
 
 - (void)dzn_invalidate
 {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
+        [[self subviews] enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            if ([obj isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
+                obj.userInteractionEnabled = YES;
+            }
+        }];
+    }
+    
     // Notifies that the empty dataset view will disappear
     [self dzn_willDisappear];
     

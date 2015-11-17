@@ -25,6 +25,7 @@
 @property (nonatomic, weak) IBOutlet id <DZNEmptyDataSetDelegate> emptyDataSetDelegate;
 /** YES if any empty dataset is visible. */
 @property (nonatomic, readonly, getter = isEmptyDataSetVisible) BOOL emptyDataSetVisible;
+@property (nonatomic, readonly) UIView* emptyDataSetView;
 
 /**
  Reloads the empty dataset content receiver.
